@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<style type="text/css">
+		*{
+			padding: 0;
+			margin: 0;
+		}
+			#wrap{
+				width: 343px;
+				height: 480px;
+				background-image: url(img/bg.jpg);	
+				position: relative;		
+				overflow: hidden;	
+			}
+			#start{
+				float: left;
+				position: relative;
+				width: 343px;
+				height: 480px;
+				/*display: none;*/
+			}
+			#start img{
+				position: absolute;
+			}
+			#start img:nth-child(1){
+				top: 115px;
+				left: 60px;
+			}
+			#start img:nth-child(2){
+				top: 150px;
+				left: 255px;
+			}
+			#start img:nth-child(3){
+				top: 250px;
+				left: 130px;
+				cursor: pointer;
+			}
+			#content{
+				position:relative;
+				/*visibility: hidden;*/
+				z-index: 5;
+				float: left;
+				width: 343px;
+				/*height: 300px;*/
+				/*border: 2px solid black;*/
+				height: 480px;
+			}
+			#score{
+				position: absolute;
+				left:150px ;
+			}
+			#bird2{
+				position: absolute;
+				left:50px;
+				top: 270px;
+			}
+			
+			#bottom{
+				position: absolute;
+				top: 423px;
+				width: 9999px;
+			}
+			#land{
+				float: left;
+			}
+			#content2{
+				width: 900px;
+				height: 420px;
+				/*border: 2px solid green;*/
+				position: absolute;
+				left: 350px;
+				
+			}
+			#pipe{
+				width: 400px;
+				height: 420px;
+				/*border: 2px solid green;*/
+				position: relative;
+				float: left;
+			}
+			#content2 img:nth-child(1){
+				position: absolute;
+				width: 60px;
+				bottom: 0;
+			}
+			#content2 img:nth-child(3){
+				position: absolute;
+				bottom: 0;
+				width: 60px;
+				left: 200px;
+				vertical-align: bottom;
+	
+			}
+			#content2 img:nth-child(2){
+				position: absolute;
+				width: 60px;
+			}
+			#content2 img:nth-child(4){
+				position: absolute;
+				left: 200px;
+				width: 60px;
+			}
+			#over{
+				width: 343px;
+				/*height: 300px;*/
+				border: 2px solid black;
+				height: 480px;
+				position: absolute;
+				left: 0;
+			    top: 0;
+			    display: none;
+			}
+			#over img:nth-child(1){
+				position: absolute;
+				top: 100px;
+				left: 60px;
+				
+			}
+			#over img:nth-child(2){
+				position: absolute;
+				top: 150px;
+				left: 40px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="wrap">
+			<div id="start">
+				<img  src="img/head.jpg"/>
+				<img id="bird" src="img/bird1.png"/>
+				<img id="startBtn" src="img/start.jpg"/>
+			</div>
+			<div id="content">
+				<img id="score" src="img/0.jpg"/>
+				<img id="bird2" src="img/bird1.png"/>
+			</div>
+			<div id="content2">
+				<div id="pipe">
+				<img  src="img/down_pipe.png"/>
+				<img  src="img/up_pipe.png"/>
+				<img  src="img/down_pipe.png"/>
+				<img  src="img/up_pipe.png"/>
+				</div>
+			</div>
+			<div id="over">
+				<img src="img/game_over.jpg"/>
+				<img src="img/message.jpg"/>
+			</div>
+			<div id="bottom"><img id="land" src="img/banner.jpg"/></div>	
+			
+		</div>
+	</body>
+	<script type="text/javascript">
+		var bird = document.getElementById("bird");
+		var startBtn = document.getElementById("startBtn");
+		var start = document.getElementById("start");
+		var content = document.getElementById("content");
+		var land = document.getElementById("land");
+		var bird2 = document.getElementById("bird2");
+		var bottom = document.getElementById("bottom");
+		var content2 = document.getElementById("content2");
+		var pillars = content2.getElementsByTagName("img");
+		var over = document.getElementById("over");
+		var score = document.getElementById("score");
+		var pipe = document.getElementById("pipe");
+		content2.innerHTML += content2.innerHTML;
+		var timer;//鸟向下飞定时器
+		var bool = true;//定义鸟向上飞
+		var index = 0; 
+		var x = 0; //草地滚动距离
+		var high = 0;//鸟飞的距离;
+		var index2 = 343;//柱子移动距离
+		var scores = 0; //定义分数
+		var timer2;  //分数定时器
+		//开始界面的定时器
+		setInterval(function  () {
+			if (bool == true) {
+				index -= 10;
+		       if (index == -30) {
+		   	      bool = false;
+		       }
+				 bird.style.top =140 + index + 'px';
+				
+			} else if(bool == false){
+				index += 10;
+				 if (index == 30) {
+		   	      bool = true;
+		       }
+				  bird.style.top =140 + index + 'px';
+			}
+		   
+		
+		},200)
+		//鸟开始向下飞的函数
+		function fly () {
+			high++;	
+			if ( bird2.offsetTop > 380 ) {
+				high = 0;
+				over.style.display = "block";
+				clearInterval(timer);
+				clearInterval(timer2);
+			}
+			bird2.src = "img/down_bird1.png";
+			bird2.style.top = bird2.offsetTop + high +'px';
+		}
+		
+		//开始按钮点击事件
+		startBtn.onclick = function  () {
+			//清除事件冒泡
+			event.cancelBubble = true;
+			start.style.display = "none";
+			content.style.display = "block";
+			bottom.innerHTML += bottom.innerHTML;
+//			content2.innerHTML += content2.innerHTML;
+			//地面滚动
+			setInterval(function  () {
+			   x--;
+			   if (x == -343) {
+			   	 x = 0;
+			   }
+			 bottom.style.left = x + 'px';
+			
+			},20)
+             //鸟向下飞
+			timer = setInterval(fly,200)
+			//柱子移动
+			setInterval(function  () {
+				index2--;
+				if (index2 == -343) {
+					index2 = 0;
+				}
+			    content2.style.left =  index2 + 'px';
+				
+			},5);
+			
+			
+			
+			//点击小鸟向上飞
+			document.onclick = function  () {
+			high -= 3;
+			bird2.src = "img/up_bird1.png"
+			bird2.style.top = bird2.offsetTop + high +'px';
+			clearInterval(timer);
+			//开启定时器
+			timer = setInterval(fly,200);
+			//分数定时器
+//			timer2 = setInterval(function  () {
+//				clearInterval(timer2);
+//      	     scores++;
+//      	     if (scores == 9) {
+//      	   	 scores = 0;
+//      	     }
+//      	      score.src = 'img/' +scores +'.jpg';
+//           },2000)
+
+			}
+			
+		}
+
+		//随机柱子的高度
+		function randomNum (m,n) {
+		
+		 return  Math.floor(Math.random() * (n - m + 1) + m);	
+		}
+		for (var i = 0; i < pillars.length; i ++) {
+		
+			pillars[i].style.height =  randomNum(100,180) +'px';
+			
+		}
+   
+		
+	</script>
+</html>
